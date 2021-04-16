@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            height: 97vh;
+            background-color: rgb(80, 23, 133);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #container {
+            height: 50%;
+            width: 30%;
+            background: cornsilk;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 16px 16px 14px 4px black;
+            border-radius: 6px;
+        }
+
+        #quote {
+            font-size: 1.6rem;
+            text-align: center;
+            height: 20%;
+            margin: 0px 6px;
+            font-family: cursive;
+            color: rgb(54, 0, 54);
+            text-shadow: rgba(0, 0, 0, 0.815) 6px 2px 10px;
+        }
+
+        #author {
+            font-size: 1.1rem;
+            height: 10%;
+            width: 80%;
+            text-align: right;
+            margin: 0px;
+            font-family: Arial, Helvetica, sans-serif;
+            text-shadow: rgba(0, 0, 0, 0.651) 6px 4px 6px;
+        }
+
+        .btn {
+            height: 50px;
+            width: 80px;
+            font-size: 1.8rem;
+            margin: 10px 20px;
+            border-radius: 6px;
+        }
+
+        .btn:hover {
+            cursor: pointer;
+            transform: scale(1.1);
+        }
+
+        #btnQ {
+            background-color: rgb(255, 184, 255);
+            color: rgb(54, 0, 54);
+        }
+
+        #btnT {
+            background-color: rgb(66, 153, 253);
+            color: white;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <title>Quotes Generator</title>
+</head>
+
+<body>
+    <div id="container">
+        <p id="quote"></p>
+        <h6 id="author"></h6>
+        <div id="buttons">
+            <button class="btn" id="btnQ"><i class="fas fa-cog"></i></button>
+            <button class="btn" id="btnT"><i class="fab fa-twitter"></i></button>
+        </div>
+    </div>
+    <script>
+        const quote = document.getElementById('quote');
+        const author = document.getElementById('author');
+        const btnQ = document.getElementById('btnQ');
+        const btnT = document.getElementById('btnT');
+        let data = "";
+        let quoteObj = {};
+
+        const getData = async () => {
+            const api = "https://type.fit/api/quotes";
+            try {
+                let newData = await fetch(api);
+                data = await newData.json();
+                generate();
+
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        const generate = () => {
+            let i = Math.floor(Math.random() * 100);
+            quote.innerText = data[i].text;
+            if (data[i].author != null) author.innerText = `- by ${data[i].author}`;
+            else author.innerText = "- by Unknown";
+            quoteObj = data[i];
+        }
+        const tweet = () => {
+            let createPost = `https://twitter.com/intent/tweet?text=${quoteObj.text} -by ${quoteObj.author}`;
+            window.open(createPost);
+        }
+
+        btnQ.addEventListener('click', generate);
+        btnT.addEventListener('click', tweet);
+
+        getData();
+    </script>
+</body>
+
+</html>
